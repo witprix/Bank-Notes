@@ -167,7 +167,7 @@
 
             <div class="section-label">Credit Card Details</div>
             <div class="input-group">
-                <input type="password" class="v-cc" inputmode="numeric" placeholder="Card Number" value="${data.cc || ''}" oninput="formatCC(this); save();">
+                <input type="password" class="v-cc" inputmode="numeric" maxlength="19" placeholder="Card Number" value="${data.cc || ''}" oninput="formatCC(this); save();">
                 <div class="toggle-btn" onclick="toggleVis(this)"><i class="material-icons-round">visibility_off</i></div>
             </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -201,7 +201,6 @@
 
     function autoTab(input) {
         if (input.value.length >= input.maxLength) {
-            // Find all inputs in the current item card
             const card = input.closest('.item-card');
             const inputs = Array.from(card.querySelectorAll('input:not([type="hidden"])'));
             const index = inputs.indexOf(input);
@@ -232,8 +231,16 @@
 
     function formatCC(input) {
         let v = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        // Limit to 16 actual digits
+        if (v.length > 16) v = v.substring(0, 16);
+        
         let parts = v.match(/.{1,4}/g);
         if (parts) input.value = parts.join(' ');
+        
+        // Custom autoTab check specifically for formatted CC
+        if (v.length === 16) {
+            autoTab(input);
+        }
     }
 
     function formatExp(input) {
