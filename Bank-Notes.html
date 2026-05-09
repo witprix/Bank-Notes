@@ -29,8 +29,6 @@
         .btn-add-main { background: var(--primary); color: white; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -50px; border: 6px solid white; cursor: pointer; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
 
         .date-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
-        @media (max-width: 480px) { .date-grid { grid-template-columns: 1fr; } }
-        
         label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block; }
     </style>
 </head>
@@ -73,6 +71,7 @@
     let MASTER_PIN = localStorage.getItem(PIN_KEY);
     let RECOVERY_KEY = localStorage.getItem(REC_KEY);
 
+    // Initial PIN setup/check
     document.getElementById('pin-field').addEventListener('input', function(e) {
         if(this.value.length === 4) {
             if(!MASTER_PIN) {
@@ -218,10 +217,7 @@
         const inputs = gridContainer.querySelectorAll('input');
         const icon = btn.querySelector('i');
         const isPass = inputs[0].type === "password";
-        
-        inputs.forEach(input => {
-            input.type = isPass ? "text" : "password";
-        });
+        inputs.forEach(input => input.type = isPass ? "text" : "password");
         icon.innerText = isPass ? "visibility" : "visibility_off";
     }
 
@@ -235,11 +231,8 @@
 
     function formatExp(input) {
         let v = input.value.replace(/\D/g, ''); 
-        if (v.length >= 2) {
-            input.value = v.substring(0, 2) + '/' + v.substring(2, 4);
-        } else {
-            input.value = v;
-        }
+        if (v.length >= 2) input.value = v.substring(0, 2) + '/' + v.substring(2, 4);
+        else input.value = v;
     }
 
     function save() {
@@ -262,43 +255,64 @@
         localStorage.setItem(DB_KEY, JSON.stringify(list));
     }
 
-    // UPDATED EXPORT LOGIC
-    function exportData() {
-        const data = localStorage.getItem(DB_KEY);
-        if (!data || data === "[]") {
-            alert("No data to export!");
+    // --- FULLY UPDATED EXPORT LOGIC FOR SAVE AS ---
+    async function exportData() {
+        const dataStr = localStorage.getItem(DB_KEY);
+        if (!dataStr || dataStr === "[]") {
+            alert("No data to backup!");
             return;
         }
 
-        // 1. Ask for Filename
-        let fileName = prompt("Enter filename for backup:", "Vault_Backup_" + new Date().toISOString().slice(0,10));
+        const defaultName = "Vault_Backup_" + new Date().toISOString().slice(0,10) + ".json";
 
-        // 2. Handle Cancel or Empty
+        // Try the modern File System Access API (Triggers native "Save As" window)
+        if ('showSaveFilePicker' in window) {
+            try {
+                const handle = await window.showSaveFilePicker({
+                    suggestedName: defaultName,
+                    types: [{
+                        description: 'JSON Backup',
+                        accept: {'application/json': ['.json']},
+                    }],
+                });
+                const writable = await handle.createWritable();
+                await writable.write(dataStr);
+                await writable.close();
+                return; // Successfully saved
+            } catch (err) {
+                if (err.name === 'AbortError') return; // User cancelled
+                console.error("FileSystem API failed, falling back...", err);
+            }
+        }
+
+        // FALLBACK: If browser doesn't support the above, or user isn't on HTTPS
+        let fileName = prompt("Enter filename for backup:", defaultName.replace(".json", ""));
         if (fileName === null) return; 
         if (fileName.trim() === "") fileName = "Vault_Backup";
         if (!fileName.endsWith(".json")) fileName += ".json";
 
-        const blob = new Blob([data], { type: 'application/json' });
+        const blob = new Blob([dataStr], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        
         a.href = url;
         a.download = fileName;
         document.body.appendChild(a);
         a.click();
         
-        // Cleanup
         setTimeout(() => {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-        }, 0);
+        }, 100);
+
+        // Alert user if they want the "Save As" location to always work in standard mode
+        alert("Backup triggered. If it didn't ask where to save, check your browser Settings > Downloads > 'Ask where to save each file'.");
     }
 
     function importData(event) {
         const reader = new FileReader();
         reader.onload = (e) => { 
             try {
-                JSON.parse(e.target.result); // Validate JSON
+                JSON.parse(e.target.result); 
                 localStorage.setItem(DB_KEY, e.target.result); 
                 location.reload(); 
             } catch(err) {
