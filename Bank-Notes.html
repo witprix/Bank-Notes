@@ -9,7 +9,6 @@
         :root { --primary: #6366f1; --success: #10b981; --danger: #ef4444; --secondary: #1e293b; --bg: #f8fafc; }
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); margin: 0; padding-bottom: 120px; color: #334155; }
         
-        /* PIN Overlay */
         #pin-overlay { position: fixed; inset: 0; background: var(--secondary); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
         .pin-box { background: #1e293b; border: 1px solid #334155; border-radius: 24px; padding: 30px; text-align: center; width: 320px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
         .pin-input { background: none; border: none; border-bottom: 2px solid var(--primary); color: white; font-size: 32px; width: 120px; text-align: center; letter-spacing: 8px; outline: none; margin: 20px 0; }
@@ -52,9 +51,6 @@
 </div>
 
 <div class="top-dash">
-<button onclick="localStorage.clear(); location.reload();" style="background: red; color: white; padding: 10px; width: 100%; border: none;">
-    TEMPORARY DEV BUTTON: WIPE ALL DATA & RESET
-</button>
     <div style="font-weight: bold; display: flex; align-items: center; gap: 8px;"><i class="material-icons-round">security</i> VAULT PRO</div>
     <div onclick="location.reload()" style="cursor:pointer;"><i class="material-icons-round">logout</i></div>
 </div>
@@ -231,16 +227,10 @@
 
     function formatCC(input) {
         let v = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-        // Limit to 16 actual digits
         if (v.length > 16) v = v.substring(0, 16);
-        
         let parts = v.match(/.{1,4}/g);
         if (parts) input.value = parts.join(' ');
-        
-        // Custom autoTab check specifically for formatted CC
-        if (v.length === 16) {
-            autoTab(input);
-        }
+        if (v.length === 16) autoTab(input);
     }
 
     function formatExp(input) {
@@ -272,15 +262,49 @@
         localStorage.setItem(DB_KEY, JSON.stringify(list));
     }
 
+    // UPDATED EXPORT LOGIC
     function exportData() {
-        const blob = new Blob([localStorage.getItem(DB_KEY)], { type: 'application/json' });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-        a.download = `Vault_Secure_Backup.json`; a.click();
+        const data = localStorage.getItem(DB_KEY);
+        if (!data || data === "[]") {
+            alert("No data to export!");
+            return;
+        }
+
+        // 1. Ask for Filename
+        let fileName = prompt("Enter filename for backup:", "Vault_Backup_" + new Date().toISOString().slice(0,10));
+
+        // 2. Handle Cancel or Empty
+        if (fileName === null) return; 
+        if (fileName.trim() === "") fileName = "Vault_Backup";
+        if (!fileName.endsWith(".json")) fileName += ".json";
+
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        
+        // Cleanup
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 0);
     }
 
     function importData(event) {
         const reader = new FileReader();
-        reader.onload = (e) => { localStorage.setItem(DB_KEY, e.target.result); location.reload(); };
+        reader.onload = (e) => { 
+            try {
+                JSON.parse(e.target.result); // Validate JSON
+                localStorage.setItem(DB_KEY, e.target.result); 
+                location.reload(); 
+            } catch(err) {
+                alert("Invalid Backup File");
+            }
+        };
         reader.readAsText(event.target.files[0]);
     }
 </script>
