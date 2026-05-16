@@ -30,6 +30,9 @@
 
         .date-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
         label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        
+        /* Utility class to hide the grid container */
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -120,12 +123,15 @@
 
     function addNew(data = {}) {
         const gridLetters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'];
+        
+        // Wrapped grid elements inside a semantic block for toggling visibility status
         let gridHTML = `
-            <div class="section-label" style="justify-content: space-between; display: flex;">
-                <span style="display: flex; align-items: center; gap: 5px;"><i class="material-icons-round" style="font-size:14px">grid_on</i> Grid Values (A-P)</span>
-                <div class="toggle-btn" onclick="toggleGrid(this)" style="padding:0; margin:0;"><i class="material-icons-round" style="font-size:20px">visibility_off</i></div>
-            </div>
-            <div class="grid-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px;">
+            <div class="grid-section-wrapper">
+                <div class="section-label" style="justify-content: space-between; display: flex;">
+                    <span style="display: flex; align-items: center; gap: 5px;"><i class="material-icons-round" style="font-size:14px">grid_on</i> Grid Values (A-P)</span>
+                    <div class="toggle-btn" onclick="toggleGrid(this)" style="padding:0; margin:0;"><i class="material-icons-round" style="font-size:20px">visibility_off</i></div>
+                </div>
+                <div class="grid-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px;">
         `;
         gridLetters.forEach(l => {
             gridHTML += `
@@ -135,13 +141,13 @@
                 </div>
             `;
         });
-        gridHTML += `</div>`;
+        gridHTML += `</div></div>`;
 
         const div = document.createElement('div');
         div.className = "item-card";
         div.innerHTML = `
             <button style="position:absolute; top:-10px; right:-10px; background:white; border-radius:50%; width:30px; height:30px; border:1px solid #ddd; color:red; cursor:pointer;" onclick="if(confirm('Delete?')){this.parentElement.remove(); save();}">×</button>
-            <input type="text" class="v-bank" placeholder="Bank / Institution Name" value="${data.bank || ''}" oninput="save()" style="font-size:18px; font-weight:800; color:var(--primary); border:none; border-bottom:2px solid #eee; width:100%; margin-bottom:15px; outline:none; background:transparent;">
+            <input type="text" class="v-bank" placeholder="Bank / Institution Name" value="${data.bank || ''}" oninput="triggerBankGrid(this); save();" style="font-size:18px; font-weight:800; color:var(--primary); border:none; border-bottom:2px solid #eee; width:100%; margin-bottom:15px; outline:none; background:transparent;">
             
             <div class="section-label">Netbanking</div>
             <div class="input-group"><input type="text" class="v-user" placeholder="Username" value="${data.user || ''}" oninput="save()"></div>
@@ -192,6 +198,20 @@
             </div>
         `;
         document.getElementById('vaultList').appendChild(div);
+        
+        // Instant assessment on card creation
+        triggerBankGrid(div.querySelector('.v-bank'));
+    }
+
+    // Evaluates card inputs to look for 'ICICI'
+    function triggerBankGrid(inputEl) {
+        const card = inputEl.closest('.item-card');
+        const gridSection = card.querySelector('.grid-section-wrapper');
+        if (inputEl.value.toUpperCase().includes('ICICI')) {
+            gridSection.classList.remove('hidden');
+        } else {
+            gridSection.classList.add('hidden');
+        }
     }
 
     function autoTab(input) {
@@ -236,26 +256,37 @@
     }
 
     function save() {
-        const list = Array.from(document.querySelectorAll('.item-card')).map(c => ({
-            bank: c.querySelector('.v-bank').value,
-            user: c.querySelector('.v-user').value, pass: c.querySelector('.v-pass').value,
-            sq: c.querySelector('.v-sq').value, sa: c.querySelector('.v-sa').value,
-            cc: c.querySelector('.v-cc').value, exp: c.querySelector('.v-exp').value,
-            cvv: c.querySelector('.v-cvv').value, ann: c.querySelector('.v-ann').value,
-            bill: c.querySelector('.v-bill').value, due: c.querySelector('.v-due').value,
-            gridA: c.querySelector('.v-grid-A').value, gridB: c.querySelector('.v-grid-B').value,
-            gridC: c.querySelector('.v-grid-C').value, gridD: c.querySelector('.v-grid-D').value,
-            gridE: c.querySelector('.v-grid-E').value, gridF: c.querySelector('.v-grid-F').value,
-            gridG: c.querySelector('.v-grid-G').value, gridH: c.querySelector('.v-grid-H').value,
-            gridI: c.querySelector('.v-grid-I').value, gridJ: c.querySelector('.v-grid-J').value,
-            gridK: c.querySelector('.v-grid-K').value, gridL: c.querySelector('.v-grid-L').value,
-            gridM: c.querySelector('.v-grid-M').value, gridN: c.querySelector('.v-grid-N').value,
-            gridO: c.querySelector('.v-grid-O').value, gridP: c.querySelector('.v-grid-P').value
-        }));
+        const list = Array.from(document.querySelectorAll('.item-card')).map(c => {
+            const isICICI = c.querySelector('.v-bank').value.toUpperCase().includes('ICICI');
+            return {
+                bank: c.querySelector('.v-bank').value,
+                user: c.querySelector('.v-user').value, pass: c.querySelector('.v-pass').value,
+                sq: c.querySelector('.v-sq').value, sa: c.querySelector('.v-sa').value,
+                cc: c.querySelector('.v-cc').value, exp: c.querySelector('.v-exp').value,
+                cvv: c.querySelector('.v-cvv').value, ann: c.querySelector('.v-ann').value,
+                bill: c.querySelector('.v-bill').value, due: c.querySelector('.v-due').value,
+                // Clean data sanitization: saves grid values only if the condition passes
+                gridA: isICICI ? c.querySelector('.v-grid-A').value : '',
+                gridB: isICICI ? c.querySelector('.v-grid-B').value : '',
+                gridC: isICICI ? c.querySelector('.v-grid-C').value : '',
+                gridD: isICICI ? c.querySelector('.v-grid-D').value : '',
+                gridE: isICICI ? c.querySelector('.v-grid-E').value : '',
+                gridF: isICICI ? c.querySelector('.v-grid-F').value : '',
+                gridG: isICICI ? c.querySelector('.v-grid-G').value : '',
+                gridH: isICICI ? c.querySelector('.v-grid-H').value : '',
+                gridI: isICICI ? c.querySelector('.v-grid-I').value : '',
+                gridJ: isICICI ? c.querySelector('.v-grid-J').value : '',
+                gridK: isICICI ? c.querySelector('.v-grid-K').value : '',
+                gridL: isICICI ? c.querySelector('.v-grid-L').value : '',
+                gridM: isICICI ? c.querySelector('.v-grid-M').value : '',
+                gridN: isICICI ? c.querySelector('.v-grid-N').value : '',
+                gridO: isICICI ? c.querySelector('.v-grid-O').value : '',
+                gridP: isICICI ? c.querySelector('.v-grid-P').value : ''
+            };
+        });
         localStorage.setItem(DB_KEY, JSON.stringify(list));
     }
 
-    // --- FULLY UPDATED EXPORT LOGIC FOR SAVE AS ---
     async function exportData() {
         const dataStr = localStorage.getItem(DB_KEY);
         if (!dataStr || dataStr === "[]") {
@@ -265,7 +296,6 @@
 
         const defaultName = "Vault_Backup_" + new Date().toISOString().slice(0,10) + ".json";
 
-        // Try the modern File System Access API (Triggers native "Save As" window)
         if ('showSaveFilePicker' in window) {
             try {
                 const handle = await window.showSaveFilePicker({
@@ -278,14 +308,13 @@
                 const writable = await handle.createWritable();
                 await writable.write(dataStr);
                 await writable.close();
-                return; // Successfully saved
+                return;
             } catch (err) {
-                if (err.name === 'AbortError') return; // User cancelled
+                if (err.name === 'AbortError') return;
                 console.error("FileSystem API failed, falling back...", err);
             }
         }
 
-        // FALLBACK: If browser doesn't support the above, or user isn't on HTTPS
         let fileName = prompt("Enter filename for backup:", defaultName.replace(".json", ""));
         if (fileName === null) return; 
         if (fileName.trim() === "") fileName = "Vault_Backup";
@@ -304,7 +333,6 @@
             URL.revokeObjectURL(url);
         }, 100);
 
-        // Alert user if they want the "Save As" location to always work in standard mode
         alert("Backup triggered. If it didn't ask where to save, check your browser Settings > Downloads > 'Ask where to save each file'.");
     }
 
