@@ -18,78 +18,27 @@
 
         .top-dash { position: sticky; top: 0; z-index: 100; background: var(--secondary); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Interactive Search Utility Block */
-        .search-container {
-            padding: 15px 20px 5px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        .search-wrapper {
-            position: relative;
-            background: white;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            padding: 0 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
+        .search-container { padding: 15px 20px 5px; max-width: 400px; margin: 0 auto; }
+        .search-wrapper { position: relative; background: white; border: 1.5px solid #e2e8f0; border-radius: 14px; display: flex; align-items: center; padding: 0 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .search-wrapper i { color: #94a3b8; margin-right: 8px; }
-        .search-bar {
-            width: 100%;
-            border: none;
-            padding: 12px 0;
-            font-size: 15px;
-            font-weight: 600;
-            outline: none;
-            color: #334155;
-            background: transparent;
-        }
+        .search-bar { width: 100%; border: none; padding: 12px 0; font-size: 15px; font-weight: 600; outline: none; color: #334155; background: transparent; }
 
-        /* Improved Grid Layout (Better than endless carousel for 20+ cards) */
         .container { max-width: 440px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
-        #vaultList {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding-top: 10px;
-        }
-        
-        .swipe-item {
-            width: 100%;
-        }
+        #vaultList { display: flex; flex-direction: column; gap: 20px; padding-top: 10px; }
+        .swipe-item { width: 100%; }
 
-        /* Physical Credit Card Styling */
         .physical-card {
-            border-radius: 16px;
-            padding: 25px 20px;
-            position: relative;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            margin-bottom: 5px;
-            color: white;
-            height: 220px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-sizing: border-box;
-            overflow: hidden;
-            cursor: pointer;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
+            border-radius: 16px; padding: 25px 20px; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-bottom: 5px; color: white; height: 220px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; overflow: hidden; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
         }
-        
-        /* Subtle Shine Animation on Card */
         .physical-card::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg); animation: shine 6s infinite; pointer-events: none;
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); animation: shine 6s infinite; pointer-events: none;
         }
         @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
 
         .physical-card input { background: transparent; border: none; color: white; outline: none; font-family: monospace; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
         .physical-card input::placeholder { color: rgba(255,255,255,0.4); }
         
-        .v-bank { font-size: 18px; font-weight: 700; font-family: 'Inter', sans-serif; text-transform: uppercase; width: 85%; border-bottom: 1px solid rgba(255,255,255,0.2) !important; padding-bottom: 5px; margin-bottom: 10px; }
+        .v-bank { font-size: 18px; font-weight: 700; font-family: 'Inter', sans-serif; text-transform: uppercase; width: 70%; border-bottom: 1px solid rgba(255,255,255,0.2) !important; padding-bottom: 5px; margin-bottom: 10px; }
         .chip-icon { font-size: 36px; color: #fbbf24; transform: rotate(90deg); margin-bottom: 5px; opacity: 0.9; }
         
         .input-group-card { display: flex; align-items: center; width: 100%; margin-bottom: 10px; }
@@ -101,13 +50,10 @@
         .v-cvv { width: 50px; font-size: 18px; letter-spacing: 2px; }
 
         .delete-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .share-btn { position: absolute; top: 20px; right: 55px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .share-btn i { font-size: 16px; }
 
-        /* Details Container - HIDDEN BY DEFAULT */
-        .details-card { 
-            display: none; 
-            background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-top: 15px; margin-bottom: 15px; 
-        }
-        
+        .details-card { display: none; background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-top: 15px; margin-bottom: 15px; }
         .section-label { font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin: 15px 0 10px; display: flex; align-items: center; gap: 5px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
         .input-group { position: relative; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; margin-bottom: 10px; }
         .input-group input { width: 100%; border: none; padding: 12px; font-size: 14px; font-weight: 600; outline: none; background: transparent; color: #334155; }
@@ -120,9 +66,7 @@
 
         .date-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
         label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block; }
-        
         .hidden { display: none !important; }
-        
         .tap-hint { text-align: center; font-size: 10px; color: #94a3b8; font-weight: 600; letter-spacing: 1px; margin-top: 5px; margin-bottom: 5px; }
     </style>
 </head>
@@ -172,10 +116,8 @@
     const REC_KEY = "Vault_Recovery_Key";
     
     const bgGradients = [
-        'linear-gradient(135deg, #1e293b 0%, #334155 100%)', 
-        'linear-gradient(135deg, #4f46e5 0%, #312e81 100%)', 
-        'linear-gradient(135deg, #059669 0%, #064e3b 100%)', 
-        'linear-gradient(135deg, #be123c 0%, #881337 100%)', 
+        'linear-gradient(135deg, #1e293b 0%, #334155 100%)', 'linear-gradient(135deg, #4f46e5 0%, #312e81 100%)', 
+        'linear-gradient(135deg, #059669 0%, #064e3b 100%)', 'linear-gradient(135deg, #be123c 0%, #881337 100%)', 
         'linear-gradient(135deg, #b45309 0%, #78350f 100%)'  
     ];
 
@@ -230,21 +172,56 @@
         if(saved.length === 0) addNew(); else saved.forEach(s => addNew(s));
     }
 
-    // Dynamic filtering logic matching typed values against card text properties
     function filterCards() {
         const query = document.getElementById('searchBar').value.toLowerCase().trim();
         const items = document.querySelectorAll('.swipe-item');
-        
         items.forEach(item => {
             const bankName = item.querySelector('.v-bank').value.toLowerCase();
             const ccNumber = item.querySelector('.v-cc').value.toLowerCase();
-            
             if (bankName.includes(query) || ccNumber.includes(query)) {
                 item.style.display = "block";
             } else {
                 item.style.display = "none";
             }
         });
+    }
+
+    // Secure Share Engine
+    function shareCardData(event, btn) {
+        event.stopPropagation(); // Stop details panel from opening
+        
+        const card = btn.closest('.swipe-item');
+        const bank = card.querySelector('.v-bank').value || "Card Details";
+        let cc = card.querySelector('.v-cc').value || "XXXX XXXX XXXX XXXX";
+        const exp = card.querySelector('.v-exp').value || "MM/YY";
+        
+        if (cc === "XXXX XXXX XXXX XXXX") {
+            alert("Please fill in card details before sharing.");
+            return;
+        }
+
+        const mode = prompt("Choose sharing platform:\n1. WhatsApp\n2. SMS", "1");
+        if (!mode) return;
+
+        const secureMask = confirm("Security Warning: Do you want to MASK your card number digits for safety?\n(Keeps only last 4 digits visible)");
+        if (secureMask) {
+            const rawDigits = cc.replace(/\s/g, '');
+            if (rawDigits.length >= 4) {
+                cc = "**** **** **** " + rawDigits.slice(-4);
+            }
+        }
+
+        // CVV is intentionally excluded entirely for critical safety compliance
+        const messageText = `💳 *${bank.toUpperCase()}*\nCard Number: ${cc}\nExpiry Date: ${exp}`;
+        const encodedText = encodeURIComponent(messageText);
+
+        if (mode === "1") {
+            window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
+        } else if (mode === "2") {
+            // Supports cross-platform native SMS launching protocols
+            const smsSeparator = (navigator.userAgent.match(/iPhone|iPad|iPod/i)) ? '&' : '?';
+            window.open(`sms:${smsSeparator}body=${encodedText}`, '_blank');
+        }
     }
 
     function addNew(data = {}) {
@@ -274,6 +251,7 @@
         div.className = "swipe-item";
         div.innerHTML = `
             <div class="physical-card" style="background: ${assignedGradient}" onclick="handleCardClick(event, this)">
+                <button class="share-btn" onclick="shareCardData(event, this)"><i class="material-icons-round">share</i></button>
                 <button class="delete-btn" onclick="if(confirm('Delete this card?')){this.closest('.swipe-item').remove(); save();}">×</button>
                 <input type="text" class="v-bank" placeholder="BANK NAME" value="${data.bank || ''}" oninput="triggerBankGrid(this); filterCards(); save();">
                 <i class="material-icons-round chip-icon">contactless</i>
@@ -339,13 +317,11 @@
         const container = document.getElementById('vaultList');
         container.appendChild(div);
         triggerBankGrid(div.querySelector('.v-bank'));
-
-        // Clearing query resets viewport focus cleanly
         document.getElementById('searchBar').value = "";
     }
 
     function handleCardClick(event, cardEl) {
-        if (['INPUT', 'BUTTON', 'I'].includes(event.target.tagName) || event.target.classList.contains('toggle-btn')) {
+        if (['INPUT', 'BUTTON', 'I'].includes(event.target.tagName) || event.target.classList.contains('toggle-btn') || event.target.closest('.share-btn')) {
             return; 
         }
         if (document.activeElement && document.activeElement.tagName === 'INPUT') {
@@ -361,11 +337,7 @@
             if (confirm("Do you want to see detailed info (Netbanking, Security Q&A, Dates)?")) {
                 detailsCard.style.display = 'block';
                 setTimeout(() => {
-                    detailsCard.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'nearest',
-                        inline: 'start'
-                    });
+                    detailsCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
                 }, 80);
             }
         }
@@ -459,9 +431,7 @@
             alert("No data to backup!");
             return;
         }
-
         const defaultName = "Vault_Backup_" + new Date().toISOString().slice(0,10) + ".json";
-
         if ('showSaveFilePicker' in window) {
             try {
                 if (!fileHandle) {
@@ -470,7 +440,7 @@
                         types: [{ description: 'JSON Backup', accept: {'application/json': ['.json']} }],
                     });
                 } else {
-                    const reuse = confirm("Overwrite previous file selection? Click 'Cancel' to alter filename or target location.");
+                    const reuse = confirm("Overwrite previous file selection? Click 'Cancel' to alter filename.");
                     if (!reuse) {
                         fileHandle = await window.showSaveFilePicker({
                             suggestedName: defaultName,
@@ -481,33 +451,22 @@
                 const writable = await fileHandle.createWritable();
                 await writable.write(dataStr);
                 await writable.close();
-                alert("Backup securely overwritten and processed!");
+                alert("Backup processed successfully!");
                 return;
             } catch (err) {
                 if (err.name === 'AbortError') return;
-                console.error("FileSystem API failed, falling back...", err);
+                console.error(err);
             }
         }
-
         let fileName = prompt("Enter filename for backup:", defaultName.replace(".json", ""));
         if (fileName === null) return; 
         if (fileName.trim() === "") fileName = "Vault_Backup";
         if (!fileName.endsWith(".json")) fileName += ".json";
-
         const blob = new Blob([dataStr], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        
-        setTimeout(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }, 100);
-
-        alert("Backup triggered successfully.");
+        a.href = url; a.download = fileName; document.body.appendChild(a); a.click();
+        setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
     }
 
     function importData(event) {
@@ -517,9 +476,7 @@
                 JSON.parse(e.target.result); 
                 localStorage.setItem(DB_KEY, e.target.result); 
                 location.reload(); 
-            } catch(err) {
-                alert("Invalid Backup File");
-            }
+            } catch(err) { alert("Invalid Backup File"); }
         };
         reader.readAsText(event.target.files[0]);
     }
