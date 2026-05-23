@@ -11,7 +11,7 @@
         
         #pin-overlay { position: fixed; inset: 0; background: var(--secondary); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
         .pin-box { background: #1e293b; border: 1px solid #334155; border-radius: 24px; padding: 30px; text-align: center; width: 320px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
-        .pin-input { background: none; border: none; border-bottom: 2px solid var(--primary); color: white; font-size: 32px; width: 120px; text-align: center; letter-spacing: 8px; outline: none; margin: 20px 0; }
+        .pin-input { background: none; border: none; border-bottom: 2px solid var(--primary); color: white; font-size: 32px; width: 120px; text-align: center; letter-spacing: 8px; outline: none; margin: 20px 0; -webkit-text-security: disc; }
         
         #recovery-display { display: none; background: #0f172a; padding: 15px; border-radius: 12px; margin-top: 15px; border: 1px dashed var(--success); }
         .code-text { font-family: monospace; color: var(--success); font-weight: bold; font-size: 14px; word-break: break-all; }
@@ -31,7 +31,6 @@
         .date-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
         label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block; }
         
-        /* Utility class to hide the grid container */
         .hidden { display: none !important; }
     </style>
 </head>
@@ -41,7 +40,7 @@
     <div class="pin-box">
         <i class="material-icons-round" style="font-size: 48px; color: var(--primary);">lock_person</i>
         <h2 id="pin-title" style="margin: 10px 0 0;">Enter PIN</h2>
-        <input type="password" id="pin-field" maxlength="4" class="pin-input" autofocus>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" id="pin-field" maxlength="4" class="pin-input" autofocus>
         <div id="recovery-display">
             <p style="font-size: 11px; color: var(--success); margin: 0 0 10px;">SAVE THIS RECOVERY CODE!</p>
             <div class="code-text" id="recovery-code-val"></div>
@@ -73,9 +72,12 @@
     
     let MASTER_PIN = localStorage.getItem(PIN_KEY);
     let RECOVERY_KEY = localStorage.getItem(REC_KEY);
+    let fileHandle = null; // Stores persistent pointer to the previously chosen file
 
-    // Initial PIN setup/check
     document.getElementById('pin-field').addEventListener('input', function(e) {
+        // Sanitize field to only allow digits
+        this.value = this.value.replace(/[^0-9]/g, '');
+        
         if(this.value.length === 4) {
             if(!MASTER_PIN) {
                 MASTER_PIN = this.value;
@@ -124,7 +126,6 @@
     function addNew(data = {}) {
         const gridLetters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'];
         
-        // Wrapped grid elements inside a semantic block for toggling visibility status
         let gridHTML = `
             <div class="grid-section-wrapper">
                 <div class="section-label" style="justify-content: space-between; display: flex;">
@@ -198,12 +199,9 @@
             </div>
         `;
         document.getElementById('vaultList').appendChild(div);
-        
-        // Instant assessment on card creation
         triggerBankGrid(div.querySelector('.v-bank'));
     }
 
-    // Evaluates card inputs to look for 'ICICI'
     function triggerBankGrid(inputEl) {
         const card = inputEl.closest('.item-card');
         const gridSection = card.querySelector('.grid-section-wrapper');
@@ -265,7 +263,6 @@
                 cc: c.querySelector('.v-cc').value, exp: c.querySelector('.v-exp').value,
                 cvv: c.querySelector('.v-cvv').value, ann: c.querySelector('.v-ann').value,
                 bill: c.querySelector('.v-bill').value, due: c.querySelector('.v-due').value,
-                // Clean data sanitization: saves grid values only if the condition passes
                 gridA: isICICI ? c.querySelector('.v-grid-A').value : '',
                 gridB: isICICI ? c.querySelector('.v-grid-B').value : '',
                 gridC: isICICI ? c.querySelector('.v-grid-C').value : '',
@@ -296,18 +293,35 @@
 
         const defaultName = "Vault_Backup_" + new Date().toISOString().slice(0,10) + ".json";
 
+        // Native File System Access Framework
         if ('showSaveFilePicker' in window) {
             try {
-                const handle = await window.showSaveFilePicker({
-                    suggestedName: defaultName,
-                    types: [{
-                        description: 'JSON Backup',
-                        accept: {'application/json': ['.json']},
-                    }],
-                });
-                const writable = await handle.createWritable();
+                // If we don't have a file handle recorded yet, prompt the picker framework to assign directory & edit filename
+                if (!fileHandle) {
+                    fileHandle = await window.showSaveFilePicker({
+                        suggestedName: defaultName,
+                        types: [{
+                            description: 'JSON Backup',
+                            accept: {'application/json': ['.json']},
+                        }],
+                    });
+                } else {
+                    // Ask if they want to reuse the exact same file path or create a distinct alternative
+                    const reuse = confirm("Overwrite previous file selection? Click 'Cancel' to alter filename or target location.");
+                    if (!reuse) {
+                        fileHandle = await window.showSaveFilePicker({
+                            suggestedName: defaultName,
+                            types: [{
+                                description: 'JSON Backup',
+                                accept: {'application/json': ['.json']},
+                            }],
+                        });
+                    }
+                }
+                const writable = await fileHandle.createWritable();
                 await writable.write(dataStr);
                 await writable.close();
+                alert("Backup securely overwritten and processed!");
                 return;
             } catch (err) {
                 if (err.name === 'AbortError') return;
@@ -315,6 +329,7 @@
             }
         }
 
+        // Standard Legacy Browser Fallback Framework (Allows Custom Directory/Name Editing via standard Prompt context)
         let fileName = prompt("Enter filename for backup:", defaultName.replace(".json", ""));
         if (fileName === null) return; 
         if (fileName.trim() === "") fileName = "Vault_Backup";
@@ -333,7 +348,7 @@
             URL.revokeObjectURL(url);
         }, 100);
 
-        alert("Backup triggered. If it didn't ask where to save, check your browser Settings > Downloads > 'Ask where to save each file'.");
+        alert("Backup triggered successfully. Ensure your browser's 'Settings -> Downloads -> Ask where to save each file before downloading' switch is enabled if you need distinct folder organization prompts.");
     }
 
     function importData(event) {
