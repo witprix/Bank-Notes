@@ -31,7 +31,7 @@
         .swipe-item { width: 100%; scroll-margin-top: 80px; }
 
         .physical-card {
-            border-radius: 16px; padding: 25px 20px; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-bottom: 5px; color: white; height: 220px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+            border-radius: 16px; padding: 20px 16px; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-bottom: 5px; color: white; height: 220px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
         }
         .physical-card::after {
             content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); animation: shine 6s infinite; pointer-events: none;
@@ -41,36 +41,38 @@
         .physical-card input { background: transparent; border: none; color: white; outline: none; font-family: monospace; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
         .physical-card input::placeholder { color: rgba(255,255,255,0.4); }
         
-        .card-brand-badge { position: absolute; bottom: 15px; right: 20px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1); }
-        .card-alert-badge { position: absolute; top: 18px; left: 20px; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; display: none; }
+        .card-brand-badge { position: absolute; bottom: 15px; right: 16px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1); }
+        .card-alert-badge { position: absolute; top: 18px; left: 16px; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; display: none; }
         .alert-due { background: var(--warning); color: #000; }
         .alert-expired { background: var(--danger); color: #fff; }
 
-        .v-bank { font-size: 18px; font-weight: 700; font-family: 'Inter', sans-serif; text-transform: uppercase; width: 65%; border-bottom: 1px solid rgba(255,255,255,0.2) !important; padding-bottom: 5px; margin-bottom: 5px; margin-top: 15px; }
-        .chip-icon { font-size: 34px; color: #fbbf24; transform: rotate(90deg); margin-bottom: 2px; opacity: 0.9; }
+        .v-bank { font-size: 16px; font-weight: 700; font-family: 'Inter', sans-serif; text-transform: uppercase; width: 60%; border-bottom: 1px solid rgba(255,255,255,0.2) !important; padding-bottom: 3px; margin-bottom: 2px; margin-top: 12px; }
+        .chip-icon { font-size: 30px; color: #fbbf24; transform: rotate(90deg); margin-bottom: 0px; opacity: 0.9; }
         
-        .input-group-card { display: flex; align-items: center; width: 100%; margin-bottom: 10px; }
-        .v-cc { font-size: 20px; letter-spacing: 2px; width: 100%; }
+        .input-group-card { display: flex; align-items: center; width: 100%; margin-bottom: 6px; }
+        
+        /* Fixed: Scaled CC font size & letter-spacing for portrait mode */
+        .v-cc { font-size: 17px !important; letter-spacing: 1px !important; width: 100%; min-width: 0; flex: 1; }
         
         .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; width: 75%; }
-        .card-label { font-size: 9px; color: rgba(255,255,255,0.7); text-transform: uppercase; margin-bottom: 2px; font-family: 'Inter', sans-serif; letter-spacing: 1px;}
-        .v-exp { width: 65px; font-size: 16px; }
-        .v-cvv { width: 45px; font-size: 16px; letter-spacing: 2px; }
+        .card-label { font-size: 8px; color: rgba(255,255,255,0.7); text-transform: uppercase; margin-bottom: 2px; font-family: 'Inter', sans-serif; letter-spacing: 1px;}
+        .v-exp { width: 55px; font-size: 14px; letter-spacing: 0.5px; }
+        .v-cvv { width: 40px; font-size: 14px; letter-spacing: 1px; }
 
-        .delete-btn { position: absolute; top: 18px; right: 20px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .share-btn { position: absolute; top: 18px; right: 55px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .share-btn i { font-size: 16px; }
+        .delete-btn { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .share-btn { position: absolute; top: 16px; right: 48px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .share-btn i { font-size: 15px; }
 
-        .copy-btn { margin-left: 6px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; }
+        .copy-btn { margin-left: 4px; cursor: pointer; opacity: 0.85; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .copy-btn:hover { opacity: 1; }
-        .copy-btn i { font-size: 18px; }
+        .copy-btn i { font-size: 16px; }
 
         .details-card { display: none; background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-top: 15px; margin-bottom: 15px; }
         .section-label { font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin: 15px 0 10px; display: flex; align-items: center; gap: 5px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
         .input-group { position: relative; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; margin-bottom: 10px; padding-right: 8px; }
         .input-group input { width: 100%; border: none; padding: 12px; font-size: 14px; font-weight: 600; outline: none; background: transparent; color: #334155; }
         
-        .toggle-btn { padding-right: 6px; color: #94a3b8; cursor: pointer; }
+        .toggle-btn { padding-right: 4px; color: #94a3b8; cursor: pointer; flex-shrink: 0; }
         .physical-card .toggle-btn { color: rgba(255,255,255,0.7); }
         .physical-card .copy-btn { color: rgba(255,255,255,0.9); }
         
@@ -417,7 +419,7 @@
                         <div class="card-label">VALID THRU</div>
                         <div style="display:flex; align-items:center;">
                             <input type="text" class="v-exp" inputmode="numeric" placeholder="MM/YY" maxlength="5" value="${data.exp || ''}" oninput="formatExp(this); autoTab(this); save()">
-                            <div class="copy-btn" onclick="copyToClipboard(event, this.parentElement.querySelector('input').value, 'Expiry')"><i class="material-icons-round" style="font-size:14px">content_copy</i></div>
+                            <div class="copy-btn" onclick="copyToClipboard(event, this.parentElement.querySelector('input').value, 'Expiry')"><i class="material-icons-round" style="font-size:13px">content_copy</i></div>
                         </div>
                     </div>
                     <div>
@@ -425,7 +427,7 @@
                         <div class="input-group-card" style="margin-bottom: 0;">
                             <input type="password" class="v-cvv" inputmode="numeric" placeholder="***" maxlength="4" value="${data.cvv || ''}" oninput="autoTab(this); save()">
                             <div class="toggle-btn" onclick="toggleVis(this)"><i class="material-icons-round">visibility_off</i></div>
-                            <div class="copy-btn" onclick="copyToClipboard(event, this.parentElement.querySelector('input').value, 'CVV')"><i class="material-icons-round" style="font-size:14px">content_copy</i></div>
+                            <div class="copy-btn" onclick="copyToClipboard(event, this.parentElement.querySelector('input').value, 'CVV')"><i class="material-icons-round" style="font-size:13px">content_copy</i></div>
                         </div>
                     </div>
                 </div>
