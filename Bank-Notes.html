@@ -6,7 +6,7 @@
     <title>Vault Pro - Complete Secure Tracker</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
-        :root { --primary: #6366f1; --success: #10b981; --danger: #ef4444; --secondary: #1e293b; --bg: #f8fafc; }
+        :root { --primary: #6366f1; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --secondary: #1e293b; --bg: #f8fafc; }
         
         * { box-sizing: border-box; }
         
@@ -41,28 +41,38 @@
         .physical-card input { background: transparent; border: none; color: white; outline: none; font-family: monospace; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
         .physical-card input::placeholder { color: rgba(255,255,255,0.4); }
         
-        .v-bank { font-size: 18px; font-weight: 700; font-family: 'Inter', sans-serif; text-transform: uppercase; width: 70%; border-bottom: 1px solid rgba(255,255,255,0.2) !important; padding-bottom: 5px; margin-bottom: 10px; }
-        .chip-icon { font-size: 36px; color: #fbbf24; transform: rotate(90deg); margin-bottom: 5px; opacity: 0.9; }
+        .card-brand-badge { position: absolute; bottom: 15px; right: 20px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1); }
+        .card-alert-badge { position: absolute; top: 18px; left: 20px; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; display: none; }
+        .alert-due { background: var(--warning); color: #000; }
+        .alert-expired { background: var(--danger); color: #fff; }
+
+        .v-bank { font-size: 18px; font-weight: 700; font-family: 'Inter', sans-serif; text-transform: uppercase; width: 65%; border-bottom: 1px solid rgba(255,255,255,0.2) !important; padding-bottom: 5px; margin-bottom: 5px; margin-top: 15px; }
+        .chip-icon { font-size: 34px; color: #fbbf24; transform: rotate(90deg); margin-bottom: 2px; opacity: 0.9; }
         
         .input-group-card { display: flex; align-items: center; width: 100%; margin-bottom: 10px; }
-        .v-cc { font-size: 22px; letter-spacing: 2px; width: 100%; }
+        .v-cc { font-size: 20px; letter-spacing: 2px; width: 100%; }
         
-        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; width: 75%; }
         .card-label { font-size: 9px; color: rgba(255,255,255,0.7); text-transform: uppercase; margin-bottom: 2px; font-family: 'Inter', sans-serif; letter-spacing: 1px;}
-        .v-exp { width: 70px; font-size: 18px; }
-        .v-cvv { width: 50px; font-size: 18px; letter-spacing: 2px; }
+        .v-exp { width: 65px; font-size: 16px; }
+        .v-cvv { width: 45px; font-size: 16px; letter-spacing: 2px; }
 
-        .delete-btn { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .share-btn { position: absolute; top: 20px; right: 55px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .delete-btn { position: absolute; top: 18px; right: 20px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .share-btn { position: absolute; top: 18px; right: 55px; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .share-btn i { font-size: 16px; }
+
+        .copy-btn { margin-left: 6px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; }
+        .copy-btn:hover { opacity: 1; }
+        .copy-btn i { font-size: 18px; }
 
         .details-card { display: none; background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-top: 15px; margin-bottom: 15px; }
         .section-label { font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin: 15px 0 10px; display: flex; align-items: center; gap: 5px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
-        .input-group { position: relative; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; margin-bottom: 10px; }
+        .input-group { position: relative; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; margin-bottom: 10px; padding-right: 8px; }
         .input-group input { width: 100%; border: none; padding: 12px; font-size: 14px; font-weight: 600; outline: none; background: transparent; color: #334155; }
         
-        .toggle-btn { padding-right: 12px; color: #94a3b8; cursor: pointer; }
+        .toggle-btn { padding-right: 6px; color: #94a3b8; cursor: pointer; }
         .physical-card .toggle-btn { color: rgba(255,255,255,0.7); }
+        .physical-card .copy-btn { color: rgba(255,255,255,0.9); }
         
         .bottom-actions { 
             position: fixed; 
@@ -113,9 +123,13 @@
         label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: block; }
         .hidden { display: none !important; }
         .tap-hint { text-align: center; font-size: 10px; color: #94a3b8; font-weight: 600; letter-spacing: 1px; margin-top: 5px; margin-bottom: 5px; }
+
+        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #0f172a; color: white; padding: 10px 20px; border-radius: 20px; font-size: 12px; font-weight: 600; z-index: 10000; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
+
+<div id="toast">Copied to Clipboard!</div>
 
 <div id="pin-overlay">
     <div class="pin-box">
@@ -133,7 +147,7 @@
 
 <div class="top-dash">
     <div style="font-weight: bold; display: flex; align-items: center; gap: 8px;"><i class="material-icons-round">security</i> VAULT PRO</div>
-    <div onclick="location.reload()" style="cursor:pointer;"><i class="material-icons-round">logout</i></div>
+    <div onclick="lockApp()" style="cursor:pointer;" title="Lock Vault"><i class="material-icons-round">logout</i></div>
 </div>
 
 <div class="search-container">
@@ -166,7 +180,7 @@
 <input type="file" id="importFile" hidden onchange="importData(event)">
 
 <script>
-    const DB_KEY = "Vault_Pro_vComplete";
+    const DB_KEY = "Vault_Pro_Encrypted_Data";
     const PIN_KEY = "Vault_Master_Pin";
     const REC_KEY = "Vault_Recovery_Key";
     const FILE_NAME_KEY = "Vault_Saved_Filename";
@@ -180,17 +194,77 @@
     let MASTER_PIN = localStorage.getItem(PIN_KEY);
     let RECOVERY_KEY = localStorage.getItem(REC_KEY);
     let fileHandle = null;
+    let inactivityTimer = null;
+    let CURRENT_PIN = "";
 
-    document.getElementById('pin-field').addEventListener('input', function(e) {
+    // ---------------- SECURITY & ENCRYPTION ENGINE ----------------
+    async function deriveKey(pin) {
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(pin), 'PBKDF2', false, ['deriveKey']);
+        return crypto.subtle.deriveKey(
+            { name: 'PBKDF2', salt: enc.encode('VaultProSaltKey_2026'), iterations: 100000, hash: 'SHA-256' },
+            keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+        );
+    }
+
+    async function encryptPayload(data, pin) {
+        const key = await deriveKey(pin);
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const encoded = new TextEncoder().encode(JSON.stringify(data));
+        const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded);
+        return JSON.stringify({ iv: Array.from(iv), data: Array.from(new Uint8Array(encrypted)) });
+    }
+
+    async function decryptPayload(cipherText, pin) {
+        try {
+            const { iv, data } = JSON.parse(cipherText);
+            const key = await deriveKey(pin);
+            const decrypted = await crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv: new Uint8Array(iv) },
+                key, new Uint8Array(data)
+            );
+            return JSON.parse(new TextDecoder().decode(decrypted));
+        } catch(e) {
+            return null;
+        }
+    }
+
+    // ---------------- INACTIVITY TIMER & AUTO-LOCK ----------------
+    function resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+            lockApp();
+        }, 3 * 60 * 1000); // Auto Lock after 3 Minutes of Inactivity
+    }
+
+    ['mousemove', 'keydown', 'touchstart', 'scroll'].forEach(evt => {
+        window.addEventListener(evt, resetInactivityTimer, true);
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) lockApp();
+    });
+
+    function lockApp() {
+        CURRENT_PIN = "";
+        document.getElementById('vaultList').innerHTML = "";
+        document.getElementById('pin-field').value = "";
+        document.getElementById('pin-overlay').style.display = 'flex';
+    }
+
+    // ---------------- PIN & AUTHENTICATION FLOW ----------------
+    document.getElementById('pin-field').addEventListener('input', async function(e) {
         this.value = this.value.replace(/[^0-9]/g, '');
         if(this.value.length === 4) {
             if(!MASTER_PIN) {
                 MASTER_PIN = this.value;
+                CURRENT_PIN = this.value;
                 RECOVERY_KEY = Array.from(crypto.getRandomValues(new Uint32Array(4))).map(n => n.toString(36)).join('-').toUpperCase();
                 localStorage.setItem(PIN_KEY, MASTER_PIN);
                 localStorage.setItem(REC_KEY, RECOVERY_KEY);
                 showRecoveryFlow();
             } else if(this.value === MASTER_PIN) {
+                CURRENT_PIN = this.value;
                 unlockVault();
             } else {
                 alert("Wrong PIN");
@@ -211,18 +285,24 @@
         const input = prompt("Enter your 16-character Recovery Code:");
         if (input && input.toUpperCase() === RECOVERY_KEY) {
             localStorage.removeItem(PIN_KEY);
-            alert("Verified. Set a new PIN on next reload.");
+            localStorage.removeItem(DB_KEY);
+            alert("Verified. Resetting PIN. Reloading...");
             location.reload();
         } else if (input) alert("Invalid Code.");
     }
 
-    function unlockVault() {
+    async function unlockVault() {
         document.getElementById('pin-overlay').style.display = 'none';
-        init();
+        resetInactivityTimer();
+        await init();
     }
 
-    function init() {
-        const saved = JSON.parse(localStorage.getItem(DB_KEY)) || [];
+    async function init() {
+        const rawEncrypted = localStorage.getItem(DB_KEY);
+        let saved = [];
+        if (rawEncrypted) {
+            saved = await decryptPayload(rawEncrypted, CURRENT_PIN) || [];
+        }
         const container = document.getElementById('vaultList');
         container.innerHTML = "";
         if(saved.length === 0) {
@@ -232,55 +312,66 @@
         }
     }
 
-    function filterCards() {
-        const query = document.getElementById('searchBar').value.toLowerCase().trim();
-        const items = document.querySelectorAll('.swipe-item');
-        items.forEach(item => {
-            const bankName = item.querySelector('.v-bank').value.toLowerCase();
-            const ccNumber = item.querySelector('.v-cc').value.toLowerCase();
-            if (bankName.includes(query) || ccNumber.includes(query)) {
-                item.style.display = "block";
-            } else {
-                item.style.display = "none";
+    // ---------------- CARD BRAND DETECTION & BADGES ----------------
+    function detectCardBrand(number) {
+        const clean = number.replace(/\s+/g, '');
+        if (/^4/.test(clean)) return 'VISA';
+        if (/^(5[1-5]|2[2-7])/.test(clean)) return 'MASTERCARD';
+        if (/^3[47]/.test(clean)) return 'AMEX';
+        if (/^(6011|65|64[4-9])/.test(clean)) return 'DISCOVER';
+        if (/^(60|6521|353|356)/.test(clean)) return 'RUPAY';
+        return 'CARD';
+    }
+
+    function checkAlertBadges(cardEl, data) {
+        const alertBadge = cardEl.querySelector('.card-alert-badge');
+        const today = new Date();
+        alertBadge.style.display = "none";
+
+        // Expiry check
+        if (data.exp && data.exp.length === 5) {
+            const [m, y] = data.exp.split('/');
+            const expDate = new Date(2000 + parseInt(y), parseInt(m), 0);
+            if (expDate < today) {
+                alertBadge.innerText = "EXPIRED";
+                alertBadge.className = "card-alert-badge alert-expired";
+                alertBadge.style.display = "block";
+                return;
             }
+        }
+
+        // Billing due check
+        if (data.due) {
+            const dueDay = parseInt(data.due);
+            const currentDay = today.getDate();
+            if (dueDay >= currentDay && dueDay - currentDay <= 3) {
+                alertBadge.innerText = `DUE IN ${dueDay - currentDay} DAYS`;
+                alertBadge.className = "card-alert-badge alert-due";
+                alertBadge.style.display = "block";
+            }
+        }
+    }
+
+    // ---------------- CLIPBOARD HELPER ----------------
+    function copyToClipboard(event, value, label) {
+        event.stopPropagation();
+        if (!value) return;
+        navigator.clipboard.writeText(value.replace(/\s+/g, '')).then(() => {
+            showToast(`${label} Copied! Auto-clears in 30s`);
+            setTimeout(() => {
+                navigator.clipboard.writeText('');
+            }, 30000);
         });
     }
 
-    function shareCardData(event, btn) {
-        event.stopPropagation();
-        
-        const card = btn.closest('.swipe-item');
-        const bank = card.querySelector('.v-bank').value || "Card Details";
-        let cc = card.querySelector('.v-cc').value || "XXXX XXXX XXXX XXXX";
-        const exp = card.querySelector('.v-exp').value || "MM/YY";
-        
-        if (cc === "XXXX XXXX XXXX XXXX") {
-            alert("Please fill in card details before sharing.");
-            return;
-        }
-
-        const mode = prompt("Choose sharing platform:\n1. WhatsApp\n2. SMS", "1");
-        if (!mode) return;
-
-        const secureMask = confirm("Security Warning: Do you want to MASK your card number digits for safety?\n(Keeps only last 4 digits visible)");
-        if (secureMask) {
-            const rawDigits = cc.replace(/\s/g, '');
-            if (rawDigits.length >= 4) {
-                cc = "**** **** **** " + rawDigits.slice(-4);
-            }
-        }
-
-        const messageText = `💳 *${bank.toUpperCase()}*\nCard Number: ${cc}\nExpiry Date: ${exp}`;
-        const encodedText = encodeURIComponent(messageText);
-
-        if (mode === "1") {
-            window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
-        } else if (mode === "2") {
-            const smsSeparator = (navigator.userAgent.match(/iPhone|iPad|iPod/i)) ? '&' : '?';
-            window.open(`sms:${smsSeparator}body=${encodedText}`, '_blank');
-        }
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.innerText = msg;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 2500);
     }
 
+    // ---------------- CARD DOM RENDERER ----------------
     function addNew(data = {}) {
         const gridLetters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'];
         const cardCount = document.querySelectorAll('.swipe-item').length;
@@ -308,38 +399,50 @@
         div.className = "swipe-item";
         div.innerHTML = `
             <div class="physical-card" style="background: ${assignedGradient}" onclick="handleCardClick(event, this)">
+                <div class="card-alert-badge"></div>
                 <button class="share-btn" onclick="shareCardData(event, this)"><i class="material-icons-round">share</i></button>
                 <button class="delete-btn" onclick="if(confirm('Delete this card?')){this.closest('.swipe-item').remove(); save();}">×</button>
+                
                 <input type="text" class="v-bank" placeholder="BANK NAME" value="${data.bank || ''}" oninput="triggerBankGrid(this); filterCards(); save();">
                 <i class="material-icons-round chip-icon">contactless</i>
                 
                 <div class="input-group-card">
                     <input type="password" class="v-cc" inputmode="numeric" maxlength="19" placeholder="XXXX XXXX XXXX XXXX" value="${data.cc || ''}" oninput="formatCC(this); filterCards(); save();">
                     <div class="toggle-btn" onclick="toggleVis(this)"><i class="material-icons-round">visibility_off</i></div>
+                    <div class="copy-btn" onclick="copyToClipboard(event, this.parentElement.querySelector('input').value, 'Card Number')"><i class="material-icons-round">content_copy</i></div>
                 </div>
                 
                 <div class="card-bottom">
                     <div>
                         <div class="card-label">VALID THRU</div>
-                        <input type="text" class="v-exp" inputmode="numeric" placeholder="MM/YY" maxlength="5" value="${data.exp || ''}" oninput="formatExp(this); autoTab(this); save()">
+                        <div style="display:flex; align-items:center;">
+                            <input type="text" class="v-exp" inputmode="numeric" placeholder="MM/YY" maxlength="5" value="${data.exp || ''}" oninput="formatExp(this); autoTab(this); save()">
+                            <div class="copy-btn" onclick="copyToClipboard(event, this.parentElement.querySelector('input').value, 'Expiry')"><i class="material-icons-round" style="font-size:14px">content_copy</i></div>
+                        </div>
                     </div>
                     <div>
                         <div class="card-label">CVV</div>
                         <div class="input-group-card" style="margin-bottom: 0;">
                             <input type="password" class="v-cvv" inputmode="numeric" placeholder="***" maxlength="4" value="${data.cvv || ''}" oninput="autoTab(this); save()">
                             <div class="toggle-btn" onclick="toggleVis(this)"><i class="material-icons-round">visibility_off</i></div>
+                            <div class="copy-btn" onclick="copyToClipboard(event, this.parentElement.querySelector('input').value, 'CVV')"><i class="material-icons-round" style="font-size:14px">content_copy</i></div>
                         </div>
                     </div>
                 </div>
+                <div class="card-brand-badge">${detectCardBrand(data.cc || '')}</div>
             </div>
             <div class="tap-hint">TAP CARD FOR EXTRA INFO</div>
 
             <div class="details-card">
                 <div class="section-label">Netbanking</div>
-                <div class="input-group"><input type="text" class="v-user" placeholder="Username" value="${data.user || ''}" oninput="save()"></div>
+                <div class="input-group">
+                    <input type="text" class="v-user" placeholder="Username" value="${data.user || ''}" oninput="save()">
+                    <div class="copy-btn" onclick="copyToClipboard(event, this.parentElement.querySelector('input').value, 'Username')"><i class="material-icons-round">content_copy</i></div>
+                </div>
                 <div class="input-group">
                     <input type="password" class="v-pass" placeholder="Password" value="${data.pass || ''}" oninput="save()">
                     <div class="toggle-btn" onclick="toggleVis(this)"><i class="material-icons-round">visibility_off</i></div>
+                    <div class="copy-btn" onclick="copyToClipboard(event, this.parentElement.querySelector('input').value, 'Password')"><i class="material-icons-round">content_copy</i></div>
                 </div>
 
                 <div class="section-label">Security Q&A</div>
@@ -385,11 +488,64 @@
         }
 
         triggerBankGrid(div.querySelector('.v-bank'));
+        checkAlertBadges(div, data);
         document.getElementById('searchBar').value = "";
     }
 
+    // ---------------- SEARCH, FILTER & INTERACTIONS ----------------
+    function filterCards() {
+        const query = document.getElementById('searchBar').value.toLowerCase().trim();
+        const items = document.querySelectorAll('.swipe-item');
+        items.forEach(item => {
+            const bankName = item.querySelector('.v-bank').value.toLowerCase();
+            const ccNumber = item.querySelector('.v-cc').value.toLowerCase();
+            if (bankName.includes(query) || ccNumber.includes(query)) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    }
+
+    function shareCardData(event, btn) {
+        event.stopPropagation();
+        const card = btn.closest('.swipe-item');
+        const bank = card.querySelector('.v-bank').value || "Card Details";
+        let cc = card.querySelector('.v-cc').value || "XXXX XXXX XXXX XXXX";
+        const exp = card.querySelector('.v-exp').value || "MM/YY";
+        
+        if (cc === "XXXX XXXX XXXX XXXX") {
+            alert("Please fill in card details before sharing.");
+            return;
+        }
+
+        const mode = prompt("Choose sharing platform:\n1. WhatsApp\n2. SMS", "1");
+        if (!mode) return;
+
+        const secureMask = confirm("Security Warning: Do you want to MASK your card number digits for safety?\n(Keeps only last 4 digits visible)");
+        if (secureMask) {
+            const rawDigits = cc.replace(/\s/g, '');
+            if (rawDigits.length >= 4) {
+                cc = "**** **** **** " + rawDigits.slice(-4);
+            }
+        }
+
+        const messageText = `💳 *${bank.toUpperCase()}*\nCard Number: ${cc}\nExpiry Date: ${exp}`;
+        const encodedText = encodeURIComponent(messageText);
+
+        if (mode === "1") {
+            window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
+        } else if (mode === "2") {
+            const smsSeparator = (navigator.userAgent.match(/iPhone|iPad|iPod/i)) ? '&' : '?';
+            window.open(`sms:${smsSeparator}body=${encodedText}`, '_blank');
+        }
+    }
+
     function handleCardClick(event, cardEl) {
-        if (['INPUT', 'BUTTON', 'I'].includes(event.target.tagName) || event.target.classList.contains('toggle-btn') || event.target.closest('.share-btn')) {
+        if (['INPUT', 'BUTTON', 'I'].includes(event.target.tagName) || 
+            event.target.classList.contains('toggle-btn') || 
+            event.target.closest('.copy-btn') || 
+            event.target.closest('.share-btn')) {
             return; 
         }
         if (document.activeElement && document.activeElement.tagName === 'INPUT') {
@@ -453,6 +609,11 @@
         if (v.length > 16) v = v.substring(0, 16);
         let parts = v.match(/.{1,4}/g);
         if (parts) input.value = parts.join(' ');
+        
+        // Brand update
+        const cardEl = input.closest('.swipe-item');
+        cardEl.querySelector('.card-brand-badge').innerText = detectCardBrand(v);
+
         if (v.length === 16) autoTab(input);
     }
 
@@ -462,10 +623,13 @@
         else input.value = v;
     }
 
-    function save() {
+    // ---------------- ENCRYPTED PERSISTENT SAVE ----------------
+    async function save() {
+        if (!CURRENT_PIN) return;
+        
         const list = Array.from(document.querySelectorAll('.swipe-item')).map(c => {
             const isICICI = c.querySelector('.v-bank').value.toUpperCase().includes('ICICI');
-            return {
+            const dataObj = {
                 bank: c.querySelector('.v-bank').value,
                 user: c.querySelector('.v-user').value, pass: c.querySelector('.v-pass').value,
                 sq: c.querySelector('.v-sq').value, sa: c.querySelector('.v-sa').value,
@@ -489,19 +653,26 @@
                 gridO: isICICI ? c.querySelector('.v-grid-O').value : '',
                 gridP: isICICI ? c.querySelector('.v-grid-P').value : ''
             };
+            checkAlertBadges(c, dataObj);
+            return dataObj;
         });
-        localStorage.setItem(DB_KEY, JSON.stringify(list));
+
+        const encryptedStr = await encryptPayload(list, CURRENT_PIN);
+        localStorage.setItem(DB_KEY, encryptedStr);
     }
 
+    // ---------------- BACKUP & RESTORE ENGINE ----------------
     async function exportData() {
-        save(); // Ensure all active DOM input changes are captured
-        const dataStr = localStorage.getItem(DB_KEY);
-        if (!dataStr || dataStr === "[]") {
+        await save();
+        const rawEncrypted = localStorage.getItem(DB_KEY);
+        if (!rawEncrypted) {
             alert("No data to backup!");
             return;
         }
 
-        // Check if File System Access API is supported (Desktop Browsers)
+        const dataObj = await decryptPayload(rawEncrypted, CURRENT_PIN);
+        const dataStr = JSON.stringify(dataObj, null, 2);
+
         if ('showSaveFilePicker' in window) {
             try {
                 if (!fileHandle) {
@@ -512,30 +683,26 @@
                     });
                     localStorage.setItem(FILE_NAME_KEY, fileHandle.name);
                 } else {
-                    // Check existing handle permission
                     const options = { mode: 'readwrite' };
                     if ((await fileHandle.queryPermission(options)) !== 'granted') {
                         if ((await fileHandle.requestPermission(options)) !== 'granted') {
-                            fileHandle = null; // Reset handle if permission denied
+                            fileHandle = null;
                             return exportData();
                         }
                     }
                 }
 
-                // Overwrite complete dataset in same file without asking again
                 const writable = await fileHandle.createWritable();
                 await writable.write(dataStr);
                 await writable.close();
-                alert(`Data exported successfully to "${fileHandle.name}"!`);
+                alert(`Backup exported successfully to "${fileHandle.name}"!`);
                 return;
             } catch (err) {
                 if (err.name === 'AbortError') return;
-                console.error("File handle lost or unavailable, falling back to name prompt:", err);
                 fileHandle = null;
             }
         }
 
-        // Fallback for mobile/browsers without direct file handles
         let savedFileName = localStorage.getItem(FILE_NAME_KEY);
         if (!savedFileName) {
             const defaultName = "Vault_Backup_" + new Date().toISOString().slice(0,10);
@@ -549,22 +716,25 @@
         const blob = new Blob([dataStr], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url; 
-        a.download = savedFileName; 
-        document.body.appendChild(a); 
-        a.click();
+        a.href = url; a.download = savedFileName; document.body.appendChild(a); a.click();
         setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
-        alert(`Data exported successfully as "${savedFileName}"!`);
+        alert(`Backup exported successfully as "${savedFileName}"!`);
     }
 
     function importData(event) {
         const reader = new FileReader();
-        reader.onload = (e) => { 
+        reader.onload = async (e) => { 
             try {
-                JSON.parse(e.target.result); 
-                localStorage.setItem(DB_KEY, e.target.result); 
-                location.reload(); 
-            } catch(err) { alert("Invalid Backup File"); }
+                const parsed = JSON.parse(e.target.result); 
+                if (Array.isArray(parsed)) {
+                    const encryptedStr = await encryptPayload(parsed, CURRENT_PIN);
+                    localStorage.setItem(DB_KEY, encryptedStr); 
+                    await init();
+                    alert("Vault restored successfully!");
+                } else {
+                    alert("Invalid Backup Structure");
+                }
+            } catch(err) { alert("Invalid JSON Backup File"); }
         };
         reader.readAsText(event.target.files[0]);
     }
