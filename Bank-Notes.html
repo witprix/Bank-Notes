@@ -61,7 +61,7 @@
         .toggle-btn { padding-right: 12px; color: #94a3b8; cursor: pointer; }
         .physical-card .toggle-btn { color: rgba(255,255,255,0.7); }
         
-        .bottom-actions { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px 35px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e2e8f0; z-index: 100; }
+        .bottom-actions { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px 35px; display: flex; justify-around; align-items: center; border-top: 1px solid #e2e8f0; z-index: 100; }
         .btn-add-main { background: var(--primary); color: white; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -50px; border: 6px solid white; cursor: pointer; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
 
         .date-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
@@ -169,7 +169,11 @@
         const saved = JSON.parse(localStorage.getItem(DB_KEY)) || [];
         const container = document.getElementById('vaultList');
         container.innerHTML = "";
-        if(saved.length === 0) addNew(); else saved.forEach(s => addNew(s));
+        if(saved.length === 0) {
+            addNew(); 
+        } else {
+            saved.forEach(s => addNew(s));
+        }
     }
 
     function filterCards() {
@@ -211,14 +215,12 @@
             }
         }
 
-        // CVV is intentionally excluded entirely for critical safety compliance
         const messageText = `💳 *${bank.toUpperCase()}*\nCard Number: ${cc}\nExpiry Date: ${exp}`;
         const encodedText = encodeURIComponent(messageText);
 
         if (mode === "1") {
             window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
         } else if (mode === "2") {
-            // Supports cross-platform native SMS launching protocols
             const smsSeparator = (navigator.userAgent.match(/iPhone|iPad|iPod/i)) ? '&' : '?';
             window.open(`sms:${smsSeparator}body=${encodedText}`, '_blank');
         }
@@ -314,8 +316,17 @@
                 </div>
             </div>
         `;
+
         const container = document.getElementById('vaultList');
-        container.appendChild(div);
+        
+        if (data && Object.keys(data).length > 0) {
+            container.appendChild(div);
+        } else {
+            container.prepend(div);
+            div.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => div.querySelector('.v-bank').focus(), 300);
+        }
+
         triggerBankGrid(div.querySelector('.v-bank'));
         document.getElementById('searchBar').value = "";
     }
