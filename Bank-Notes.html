@@ -169,6 +169,7 @@
     const DB_KEY = "Vault_Pro_vComplete";
     const PIN_KEY = "Vault_Master_Pin";
     const REC_KEY = "Vault_Recovery_Key";
+    const FILE_NAME_KEY = "Vault_Saved_Filename";
     
     const bgGradients = [
         'linear-gradient(135deg, #1e293b 0%, #334155 100%)', 'linear-gradient(135deg, #4f46e5 0%, #312e81 100%)', 
@@ -493,47 +494,67 @@
     }
 
     async function exportData() {
+        save(); // Ensure all active DOM input changes are captured
         const dataStr = localStorage.getItem(DB_KEY);
         if (!dataStr || dataStr === "[]") {
             alert("No data to backup!");
             return;
         }
-        const defaultName = "Vault_Backup_" + new Date().toISOString().slice(0,10) + ".json";
+
+        // Check if File System Access API is supported (Desktop Browsers)
         if ('showSaveFilePicker' in window) {
             try {
                 if (!fileHandle) {
+                    const defaultName = localStorage.getItem(FILE_NAME_KEY) || ("Vault_Backup_" + new Date().toISOString().slice(0,10) + ".json");
                     fileHandle = await window.showSaveFilePicker({
                         suggestedName: defaultName,
                         types: [{ description: 'JSON Backup', accept: {'application/json': ['.json']} }],
                     });
+                    localStorage.setItem(FILE_NAME_KEY, fileHandle.name);
                 } else {
-                    const reuse = confirm("Overwrite previous file selection? Click 'Cancel' to alter filename.");
-                    if (!reuse) {
-                        fileHandle = await window.showSaveFilePicker({
-                            suggestedName: defaultName,
-                            types: [{ description: 'JSON Backup', accept: {'application/json': ['.json']} }],
-                        });
+                    // Check existing handle permission
+                    const options = { mode: 'readwrite' };
+                    if ((await fileHandle.queryPermission(options)) !== 'granted') {
+                        if ((await fileHandle.requestPermission(options)) !== 'granted') {
+                            fileHandle = null; // Reset handle if permission denied
+                            return exportData();
+                        }
                     }
                 }
+
+                // Overwrite complete dataset in same file without asking again
                 const writable = await fileHandle.createWritable();
                 await writable.write(dataStr);
                 await writable.close();
-                alert("Backup processed successfully!");
+                alert(`Data exported successfully to "${fileHandle.name}"!`);
                 return;
             } catch (err) {
                 if (err.name === 'AbortError') return;
-                console.error(err);
+                console.error("File handle lost or unavailable, falling back to name prompt:", err);
+                fileHandle = null;
             }
         }
-        let fileName = prompt("Enter filename for backup:", defaultName.replace(".json", ""));
-        if (fileName === null) return; 
-        if (fileName.trim() === "") fileName = "Vault_Backup";
-        if (!fileName.endsWith(".json")) fileName += ".json";
+
+        // Fallback for mobile/browsers without direct file handles
+        let savedFileName = localStorage.getItem(FILE_NAME_KEY);
+        if (!savedFileName) {
+            const defaultName = "Vault_Backup_" + new Date().toISOString().slice(0,10);
+            savedFileName = prompt("Enter filename to save your backup:", defaultName);
+            if (savedFileName === null) return; 
+            if (savedFileName.trim() === "") savedFileName = "Vault_Backup";
+            if (!savedFileName.endsWith(".json")) savedFileName += ".json";
+            localStorage.setItem(FILE_NAME_KEY, savedFileName);
+        }
+
         const blob = new Blob([dataStr], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url; a.download = fileName; document.body.appendChild(a); a.click();
+        a.href = url; 
+        a.download = savedFileName; 
+        document.body.appendChild(a); 
+        a.click();
         setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+        alert(`Data exported successfully as "${savedFileName}"!`);
     }
 
     function importData(event) {
